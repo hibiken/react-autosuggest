@@ -26,6 +26,7 @@ export default class Autosuggest extends Component {
       }
     },
     onSuggestionSelected: PropTypes.func,
+    onSuggestionFocused: PropTypes.func,
     renderInputComponent: PropTypes.func,
     renderSuggestionsContainer: PropTypes.func,
     getSuggestionValue: PropTypes.func.isRequired,
@@ -112,6 +113,19 @@ export default class Autosuggest extends Component {
       } else {
         this.resetHighlightedSuggestion();
       }
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { highlightedSectionIndex, highlightedSuggestionIndex } = this.state;
+    const hasFocusedSuggestionChanged = (
+      highlightedSectionIndex !== prevState.highlightedSectionIndex ||
+      highlightedSuggestionIndex !== prevState.highlightedSuggestionIndex
+    );
+
+    if (this.props.onSuggestionFocused && hasFocusedSuggestionChanged) {
+      const suggestion = this.getHighlightedSuggestion();
+      this.props.onSuggestionFocused({ suggestion });
     }
   }
 
